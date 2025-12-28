@@ -1,0 +1,29 @@
+<!Doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title><%= data.name %></title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <h1>W杯2022 ベスト8：詳細</h1>
+    <nav>
+      <a href="/wc2022_best8">一覧に戻る</a>
+      <a href="/wc2022_best8/edit/<%= id %>">編集</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2><%= data.name %></h2>
+    <table>
+      <tr><th>項目</th><th>データ</th></tr>
+      <tr><td>ID</td><td><%= data.id %></td></tr>
+      <tr><td>国・地域</td><td><%= data.name %></td></tr>
+    </table>
+    <p class="links">
+      <a class="danger" href="/wc2022_best8/delete/<%= id %>" onclick="return confirm('削除しますか？');">削除</a>
+    </p>
+  </main>
+</body>
+</html>
