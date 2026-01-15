@@ -1,0 +1,245 @@
+% !TEX program = uplatex
+% コンパイル例：
+%   uplatex specification.tex
+%   dvipdfmx specification.dvi
+
+\documentclass[fontsize=11pt]{jlreq}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{geometry}
+\geometry{margin=25mm}
+
+\title{Webアプリケーション仕様書\\（F1 2026年出場チーム，歴代火影，W杯2022ベスト8）}
+\author{作成者：\underline{\hspace{50mm}}}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{概要}
+本書は，Express と EJS を用いて構築したWebアプリケーションの仕様をまとめたものである．
+対象データは，「F1 2026年出場チーム」「歴代火影」「W杯2022ベスト8」の3種類とし，各データセットに対してCRUD（Create，Read，Update，Delete）を提供する．
+
+本アプリは教育目的の簡易実装であり，データ保存はサーバのメモリ上で行う．そのため，サーバ再起動によりデータは初期状態へ戻る．
+
+\section{動作環境}
+\begin{tabular}{ll}
+\toprule
+項目 & 内容 \\
+\midrule
+OS & Windows / macOS（Node.js が動作する環境） \\
+言語処理系 & Node.js（LTS推奨） \\
+フレームワーク & Express \\
+テンプレート & EJS \\
+ポート & 8080 \\
+\bottomrule
+\end{tabular}
+
+\section{起動手順}
+プロジェクト直下で次を実行する．
+
+\begin{tabular}{ll}
+\toprule
+手順 & コマンド \\
+\midrule
+依存関係の導入 & \texttt{npm install} \\
+起動 & \texttt{npm start} \\
+\bottomrule
+\end{tabular}
+
+起動後，ブラウザで \texttt{http://localhost:8080/} にアクセスする．
+
+\part{利用者向け仕様}
+
+\section{利用者の想定}
+利用者は，データの閲覧を主目的として本アプリを利用する．
+本仕様の「利用者」は，データの内容を参照し，必要に応じて詳細ページを確認する．
+
+\section{画面一覧}
+\begin{longtable}{ll}
+\toprule
+画面名 & URL \\
+\midrule
+トップ & \texttt{/} \\
+F1 2026 一覧 & \texttt{/f1\_2026} \\
+F1 2026 詳細 & \texttt{/f1\_2026/\{number\}} \\
+歴代火影 一覧 & \texttt{/hokage} \\
+歴代火影 詳細 & \texttt{/hokage/\{number\}} \\
+W杯2022 ベスト8 一覧 & \texttt{/wc2022\_best8} \\
+W杯2022 ベスト8 詳細 & \texttt{/wc2022\_best8/\{number\}} \\
+\bottomrule
+\end{longtable}
+
+\section{基本操作}
+\subsection{一覧表示}
+トップ画面から任意のデータセットを選択すると，一覧画面に遷移する．一覧画面では，各行の名称をクリックすることで詳細画面に遷移できる．
+
+\subsection{詳細表示}
+詳細画面では，選択した要素の各項目を表形式で表示する．
+
+\part{管理者向け仕様}
+
+\section{管理者の想定}
+管理者は，データの追加・編集・削除を行い，Web上に表示される内容を更新する．
+教育用の簡易アプリのため，認証機能は実装しない．実運用では，管理者向け機能を認証で保護することが望ましい．
+
+\section{管理機能}
+\subsection{追加（Create）}
+各一覧画面の「追加」リンクを選択すると，追加フォーム（静的HTML）へ遷移する．送信後，対象一覧へ戻り，追加内容が反映される．
+
+\subsection{編集（Update）}
+各一覧画面の「編集」リンクを選択すると，編集画面へ遷移する．編集画面から更新を送信すると，対象一覧へ戻り，変更が反映される．
+
+\subsection{削除（Delete）}
+各一覧画面および詳細画面の「削除」リンクを選択すると，対象の行が削除され，対象一覧へ戻る．削除時はブラウザの確認ダイアログを表示する．
+
+\section{入力項目と制約}
+\subsection{F1 2026年出場チーム}
+\begin{tabular}{lll}
+\toprule
+項目 & 必須 & 制約 \\
+\midrule
+チーム名（name） & 必須 & 80文字以内 \\
+メモ（note） & 任意 & 制限なし（画面表示上は短文推奨） \\
+\bottomrule
+\end{tabular}
+
+\subsection{歴代火影}
+\begin{tabular}{lll}
+\toprule
+項目 & 必須 & 制約 \\
+\midrule
+名称（name） & 必須 & 80文字以内 \\
+Roman（roman） & 任意 & 画面表示上は短文推奨 \\
+メモ（note） & 任意 & 画面表示上は短文推奨 \\
+\bottomrule
+\end{tabular}
+
+\subsection{W杯2022 ベスト8}
+\begin{tabular}{lll}
+\toprule
+項目 & 必須 & 制約 \\
+\midrule
+国・地域（name） & 必須 & 80文字以内 \\
+\bottomrule
+\end{tabular}
+
+\section{データの永続化について}
+本アプリはメモリ上の配列で管理するため，サーバ再起動によりデータは初期化される．
+管理者が更新内容を残す必要がある場合，JSON API を利用して手動でバックアップを取る，あるいはDBを導入する拡張を行う．
+
+\part{開発者向け仕様}
+
+\section{システム構成}
+\subsection{ディレクトリ構成}
+\begin{verbatim}
+webpro_f1_hokage_wc2022/
+  app.js
+  package.json
+  views/
+    index.ejs
+    f1_2026.ejs
+    f1_2026_detail.ejs
+    f1_2026_edit.ejs
+    hokage.ejs
+    hokage_detail.ejs
+    hokage_edit.ejs
+    wc2022_best8.ejs
+    wc2022_best8_detail.ejs
+    wc2022_best8_edit.ejs
+  public/
+    style.css
+    f1_2026_new.html
+    hokage_new.html
+    wc2022_best8_new.html
+  README.md
+  specification.tex
+\end{verbatim}
+
+\subsection{サーバ側の設計}
+\texttt{app.js} は，以下の役割を持つ．
+
+\begin{tabular}{ll}
+\toprule
+役割 & 内容 \\
+\midrule
+ルーティング & 各URLに対して，一覧・詳細・編集などの処理を割り当てる \\
+テンプレート描画 & \texttt{res.render()} により EJS を描画する \\
+フォーム受信 & \texttt{express.urlencoded()} により \texttt{POST} を扱う \\
+簡易バリデーション & 必須入力と文字数の最小チェックを行う \\
+\bottomrule
+\end{tabular}
+
+\section{ルーティング仕様}
+\subsection{F1 2026年出場チーム}
+\begin{longtable}{lll}
+\toprule
+HTTP & URL & 処理 \\
+\midrule
+GET & \texttt{/f1\_2026} & 一覧表示 \\
+GET & \texttt{/f1\_2026/create} & 追加フォームへリダイレクト \\
+POST & \texttt{/f1\_2026} & 追加登録 \\
+GET & \texttt{/f1\_2026/\{number\}} & 詳細表示 \\
+GET & \texttt{/f1\_2026/edit/\{number\}} & 編集画面 \\
+POST & \texttt{/f1\_2026/update/\{number\}} & 更新 \\
+GET & \texttt{/f1\_2026/delete/\{number\}} & 削除 \\
+\bottomrule
+\end{longtable}
+
+\subsection{歴代火影}
+\begin{longtable}{lll}
+\toprule
+HTTP & URL & 処理 \\
+\midrule
+GET & \texttt{/hokage} & 一覧表示 \\
+GET & \texttt{/hokage/create} & 追加フォームへリダイレクト \\
+POST & \texttt{/hokage} & 追加登録 \\
+GET & \texttt{/hokage/\{number\}} & 詳細表示 \\
+GET & \texttt{/hokage/edit/\{number\}} & 編集画面 \\
+POST & \texttt{/hokage/update/\{number\}} & 更新 \\
+GET & \texttt{/hokage/delete/\{number\}} & 削除 \\
+\bottomrule
+\end{longtable}
+
+\subsection{W杯2022 ベスト8}
+\begin{longtable}{lll}
+\toprule
+HTTP & URL & 処理 \\
+\midrule
+GET & \texttt{/wc2022\_best8} & 一覧表示 \\
+GET & \texttt{/wc2022\_best8/create} & 追加フォームへリダイレクト \\
+POST & \texttt{/wc2022\_best8} & 追加登録 \\
+GET & \texttt{/wc2022\_best8/\{number\}} & 詳細表示 \\
+GET & \texttt{/wc2022\_best8/edit/\{number\}} & 編集画面 \\
+POST & \texttt{/wc2022\_best8/update/\{number\}} & 更新 \\
+GET & \texttt{/wc2022\_best8/delete/\{number\}} & 削除 \\
+\bottomrule
+\end{longtable}
+
+\section{データ設計}
+本アプリでは，配列（JavaScriptのオブジェクト配列）としてデータを管理する．
+\texttt{number} は配列の添字として利用し，\texttt{id} は表示用の識別子として保持する．
+\texttt{id} は追加時に最大値へ1を加えることで生成する．
+
+\section{エラー処理}
+存在しない番号（添字）へのアクセス，および必須項目未入力はエラーとして扱い，HTTPステータスコードを返す．
+本実装では簡易化のため，エラー画面のテンプレートは用意せず，\texttt{res.status(400/404).send(...)} を用いる．
+
+\section{拡張案}
+実運用を想定する場合，以下の拡張が有効である．
+
+\begin{tabular}{ll}
+\toprule
+拡張案 & 内容 \\
+\midrule
+認証・認可 & 管理機能をログインで保護する \\
+DB導入 & SQLite / MySQL などに永続化する \\
+入力検証の強化 & 型チェック，範囲チェック，重複チェック \\
+テンプレート共通化 & EJSの共通レイアウト化により重複を削減する \\
+\bottomrule
+\end{tabular}
+
+\end{document}

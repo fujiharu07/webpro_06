@@ -1,0 +1,36 @@
+<!Doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>F1 2026年 出場チーム</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <h1>F1 2026年 出場チーム</h1>
+    <nav>
+      <a href="/">トップ</a>
+      <a href="/f1_2026/create">追加</a>
+    </nav>
+  </header>
+
+  <main>
+    <table>
+      <tr><th>ID</th><th>チーム名</th><th>メモ</th><th>操作</th></tr>
+      <% let number = 0 %>
+      <% for( let row of data ) { %>
+        <tr>
+          <td><%= row.id %></td>
+          <td><a href="/f1_2026/<%= number %>"><%= row.name %></a></td>
+          <td><%= row.note %></td>
+          <td>
+            <a href="/f1_2026/edit/<%= number %>">編集</a>
+            <a class="danger" href="/f1_2026/delete/<%= number %>" onclick="return confirm('削除しますか？');">削除</a>
+          </td>
+        </tr>
+        <% number += 1 %>
+      <% } %>
+    </table>
+  </main>
+</body>
+</html>

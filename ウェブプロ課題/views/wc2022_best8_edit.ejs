@@ -1,0 +1,28 @@
+<!Doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title><%= data.name %>（編集）</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <header>
+    <h1>W杯2022 ベスト8：編集</h1>
+    <nav>
+      <a href="/wc2022_best8">一覧に戻る</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2><%= data.name %></h2>
+    <form action="/wc2022_best8/update/<%= id %>" method="POST">
+      <table>
+        <tr><th>項目</th><th>入力</th></tr>
+        <tr><td>ID</td><td><%= data.id %></td></tr>
+        <tr><td>国・地域</td><td><input type="text" name="name" value="<%= data.name %>" required></td></tr>
+      </table>
+      <input type="submit" value="更新">
+    </form>
+  </main>
+</body>
+</html>

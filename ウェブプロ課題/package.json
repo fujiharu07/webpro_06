@@ -1,0 +1,13 @@
+{
+  "name": "webpro_f1_hokage_wc2022",
+  "version": "1.0.0",
+  "description": "Express + EJS CRUD sample (F1 2026 / Hokage / WC2022 Best8)",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.19.2"
+  }
+}
